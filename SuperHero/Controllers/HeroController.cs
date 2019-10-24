@@ -23,7 +23,8 @@ namespace SuperHero.Controllers
         // GET: Hero/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            Hero hero = context.Heroes.Where(h => h.Id == id).FirstOrDefault();
+            return View(hero);
         }
 
         // GET: Hero List/ List
@@ -36,8 +37,7 @@ namespace SuperHero.Controllers
 
         [HttpPost]
         public ActionResult List(List<Hero> heroList)
-        {   
-           
+        {     
             try
             {
                 return RedirectToAction("Index");
@@ -85,9 +85,13 @@ namespace SuperHero.Controllers
         {
             try
             {
-                // TODO: Add update logic here
+                context.Heroes.Remove(context.Heroes.FirstOrDefault(h => h.Id == hero.Id));
+                context.Heroes.Add(hero);
+                context.SaveChanges();
+                return RedirectToAction("List");
 
-                return RedirectToAction("Index");
+
+                return RedirectToAction("List");
             }
             catch
             {
@@ -95,22 +99,25 @@ namespace SuperHero.Controllers
             }
         }
 
-        // GET: Hero/Delete/5
+        //GET: Hero/Delete/5
         public ActionResult Delete(int id)
         {
-            Hero hero = context.Heroes.Where(h => h.Id == id).First();
-            return View(hero);
+            // Hero heroToDelete = context.Heroes.Where(hero => hero.Id == id).SingleOrDefault();
+            Hero heroToDelete = context.Heroes.Find(id);
+
+            return View( heroToDelete);
         }
 
-        // POST: Hero/Delete/5
+        //POST: Hero/Delete/5
         [HttpPost]
-        public ActionResult Delete(int id, Hero hero)
+        public ActionResult Delete( Hero heroToDelete)
         {
             try
             {
-                context.Heroes.Remove(hero);
+
+                context.Heroes.Remove(context.Heroes.FirstOrDefault(h => h.Id == heroToDelete.Id));
                 context.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("List");
             }
             catch
             {
