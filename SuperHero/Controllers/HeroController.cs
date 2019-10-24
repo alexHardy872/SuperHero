@@ -26,6 +26,29 @@ namespace SuperHero.Controllers
             return View();
         }
 
+        // GET: Hero List/ List
+
+        public ActionResult List()
+        {
+            List<Hero> heroList = context.Heroes.ToList();
+            return View(heroList);
+        }
+
+        [HttpPost]
+        public ActionResult List(List<Hero> heroList)
+        {   
+           
+            try
+            {
+                return RedirectToAction("Index");
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
+
         // GET: Hero/Create
         public ActionResult Create()
         {
@@ -41,7 +64,7 @@ namespace SuperHero.Controllers
             {
                 context.Heroes.Add(hero);
                 context.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("List");
             }
             catch
             {
@@ -52,12 +75,13 @@ namespace SuperHero.Controllers
         // GET: Hero/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            Hero hero = context.Heroes.Where(h => h.Id == id).First();
+            return View(hero);
         }
 
         // POST: Hero/Edit/5
         [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
+        public ActionResult Edit(int id, Hero hero)
         {
             try
             {
@@ -74,17 +98,18 @@ namespace SuperHero.Controllers
         // GET: Hero/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            Hero hero = context.Heroes.Where(h => h.Id == id).First();
+            return View(hero);
         }
 
         // POST: Hero/Delete/5
         [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
+        public ActionResult Delete(int id, Hero hero)
         {
             try
             {
-                // TODO: Add delete logic here
-
+                context.Heroes.Remove(hero);
+                context.SaveChanges();
                 return RedirectToAction("Index");
             }
             catch
